@@ -15,12 +15,18 @@
         }
 
         * { scroll-behavior: smooth; box-sizing: border-box; }
-        body { margin: 0; background-color: var(--prime-black); color: #ffffff; font-family: 'Inter', sans-serif; overflow: hidden; }
+        body { margin: 0; background-color: var(--prime-black); color: #ffffff; font-family: 'Inter', sans-serif; overflow-x: hidden; }
 
-        /* --- ESCritorio --- */
+        /* --- HERO SECTION --- */
         .hero-section { height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; position: relative; }
-        #digital-clock { font-family: 'JetBrains Mono', monospace; font-size: 5.5rem; font-weight: 100; letter-spacing: -5px; color: #fff; }
-        #candle-timer { font-family: 'JetBrains Mono'; color: var(--prime-gold); font-size: 1.1rem; margin: 20px 0; letter-spacing: 2px; }
+        #digital-clock { font-family: 'JetBrains Mono', monospace; font-size: 2.5rem; font-weight: 100; color: #fff; margin-bottom: 5px; opacity: 0.9; }
+        
+        #quote-container { height: 30px; margin-bottom: 15px; }
+        #quote-display { font-family: 'Cinzel'; color: var(--prime-gold); font-size: 0.8rem; letter-spacing: 3px; text-transform: uppercase; transition: opacity 1s; }
+
+        .timer-row { display: flex; align-items: center; gap: 15px; margin-bottom: 40px; }
+        #candle-timer { font-family: 'JetBrains Mono'; color: var(--prime-gold); font-size: 1.2rem; letter-spacing: 2px; }
+        #time-select { background: transparent; border: 1px solid var(--lapis-border); color: var(--prime-gold); font-size: 0.7rem; cursor: pointer; padding: 2px 5px; outline: none; }
 
         .main-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; max-width: 1000px; width: 100%; padding: 0 20px; }
         .card { 
@@ -31,13 +37,13 @@
             display: flex; 
             flex-direction: column; 
             align-items: center; 
-            transition: 0.5s; 
+            transition: 0.4s;
         }
         .card:hover { border-color: #2563eb; transform: translateY(-8px); box-shadow: 0 15px 40px rgba(30, 58, 138, 0.5); }
         .card span { color: var(--prime-gold); font-family: 'Cinzel'; font-size: 0.8rem; margin-bottom: 5px; }
         .card strong { font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase; color: #fff; font-weight: 300; }
 
-        /* --- DIARIO --- */
+        /* --- DIARIO / LIBRETA --- */
         #note-pad {
             position: fixed; bottom: 100px; left: 30px; width: 350px; height: 450px;
             background: var(--glass-bg); border: 1px solid var(--lapis-border); border-radius: 15px;
@@ -48,32 +54,57 @@
         #note-pad textarea { flex-grow: 1; background: transparent; border: none; color: #ddd; font-family: 'Inter', sans-serif; font-size: 0.9rem; resize: none; outline: none; line-height: 1.5; }
         .pad-btn { background: transparent; border: 1px solid var(--prime-gold); color: var(--prime-gold); font-size: 0.6rem; padding: 12px; cursor: pointer; text-transform: uppercase; margin-top: 10px; font-weight: 600; width: 100%; transition: 0.3s; }
         .pad-btn:hover { background: var(--prime-gold); color: black; }
-
         .note-toggle { position: fixed; bottom: 30px; left: 30px; width: 50px; height: 50px; background: var(--lapis-blue); border: 1px solid var(--lapis-border); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 201; color: var(--prime-gold); font-size: 1.2rem; transition: 0.3s; }
 
-        /* --- SECCIONES IFRAME --- */
-        .content-section { height: 100vh; width: 100vw; display: flex; flex-direction: column; background: #000; border-top: 1px solid #111; position: absolute; top: 100vh; left: 0; transition: transform 0.6s ease; }
-        .content-section:target { transform: translateY(-100vh); }
+        /* --- CENTRO MUSICAL FLOTANTE --- */
+        #music-center {
+            position: fixed; bottom: 30px; right: 30px; 
+            background: var(--glass-bg); border: 1px solid var(--lapis-border); 
+            border-radius: 25px; padding: 5px 15px; display: flex; align-items: center; gap: 10px;
+            z-index: 201; backdrop-filter: blur(10px); transition: 0.3s;
+        }
+        #yt-url {
+            background: transparent; border: none; color: #fff; font-size: 0.7rem;
+            width: 150px; outline: none; font-family: 'Inter';
+        }
+        .music-btn {
+            background: transparent; border: none; color: var(--prime-gold); 
+            cursor: pointer; font-size: 1.2rem; transition: 0.3s; padding: 5px;
+        }
+        .music-btn:hover { transform: scale(1.2); }
+
+        /* Esconder el reproductor */
+        #yt-player-container { position: absolute; left: -9999px; top: 0; }
+
+        /* --- SECCIONES --- */
+        .content-section { height: 100vh; width: 100vw; display: flex; flex-direction: column; background: #000; border-top: 1px solid #111; }
         .section-header { padding: 12px 30px; display: flex; justify-content: space-between; align-items: center; background: #050505; }
         .section-header h2 { font-family: 'Cinzel', serif; font-size: 0.8rem; color: var(--prime-gold); margin: 0; letter-spacing: 4px; }
+        .back-btn { color: #555; text-decoration: none; font-size: 0.6rem; letter-spacing: 2px; }
         iframe { flex-grow: 1; width: 100%; border: none; background: white; }
 
-        .back-btn { color: #555; text-decoration: none; font-size: 0.6rem; letter-spacing: 2px; }
         .danger { color: #ff4444 !important; font-weight: 700; }
         .footer-tv { position: absolute; bottom: 30px; font-size: 0.6rem; letter-spacing: 4px; color: rgba(197, 160, 89, 0.4); text-transform: uppercase; font-family: 'Cinzel', serif; }
     </style>
 </head>
 <body>
 
-    <section class="hero-section">
-        <div style="font-family: 'Cinzel'; color: var(--prime-gold); font-size: 0.7rem; letter-spacing: 3px; margin-bottom: 20px; opacity: 0.6;">SISTEMA TINTA VERDE ACTIVADO</div>
+    <section class="hero-section" id="top">
+        <div id="quote-container"><div id="quote-display">DISCIPLINA ES LIBERTAD</div></div>
         <div id="digital-clock">00:00:00</div>
-        <div id="candle-timer">NEXT CANDLE: 00:00</div>
-
+        <div class="timer-row">
+            <div id="candle-timer">NEXT: 00:00</div>
+            <select id="time-select" onchange="updateTemporalidad()">
+                <option value="60">1M</option>
+                <option value="300" selected>5M</option>
+                <option value="900">15M</option>
+                <option value="3600">1H</option>
+            </select>
+        </div>
         <div class="main-grid">
             <a href="#plan" class="card"><span>01</span><strong>Plan</strong></a>
             <a href="#real" class="card"><span>02</span><strong>Real</strong></a>
-            <a href="https://app.deriv.com/?lang=ES&account=demo" target="_blank" class="card"><span>03</span><strong>Demo</strong></a>
+            <a href="https://app.deriv.com/" target="_blank" class="card"><span>03</span><strong>Demo</strong></a>
             <a href="#lotes" class="card"><span>04</span><strong>Lotes</strong></a>
         </div>
         <div class="footer-tv">Tinta Verde Editores</div>
@@ -81,81 +112,123 @@
 
     <div id="note-pad">
         <h3>DIARIO TRADING <span onclick="toggleNotes()" style="cursor:pointer">✕</span></h3>
-        <textarea id="personal-diary" placeholder="Escribe tu análisis de hoy..."></textarea>
+        <textarea id="personal-diary" placeholder="Escribe tu análisis..."></textarea>
         <button id="send-btn" class="pad-btn" onclick="sendToDocs()">Sincronizar con Google Docs</button>
     </div>
-
     <div class="note-toggle" onclick="toggleNotes()">✎</div>
 
+    <div id="music-center">
+        <input type="text" id="yt-url" placeholder="Pega URL de YouTube..." value="https://www.youtube.com/watch?v=C9BJgrurYbc">
+        <button class="music-btn" onclick="loadAndPlay()" title="Reproducir">▶</button>
+        <button class="music-btn" onclick="pauseMusic()" title="Pausar">⏸</button>
+    </div>
+    <div id="yt-player-container"><div id="yt-player"></div></div>
+
     <section id="plan" class="content-section">
-        <div class="section-header"><h2>01 // ESTRATEGIA</h2><a href="#" class="back-btn">VOLVER ↑</a></div>
+        <div class="section-header"><h2>01 // ESTRATEGIA</h2><a href="#top" class="back-btn">VOLVER ↑</a></div>
         <iframe src="https://tveditores-ux.github.io/planDeTrading/"></iframe>
     </section>
-
     <section id="real" class="content-section">
-        <div class="section-header"><h2>02 // MERCADO REAL</h2><a href="#" class="back-btn">VOLVER ↑</a></div>
+        <div class="section-header"><h2>02 // MERCADO REAL</h2><a href="#top" class="back-btn">VOLVER ↑</a></div>
         <iframe src="https://ejam2trader-max.github.io/PlataformaDeriv/"></iframe>
     </section>
-
     <section id="lotes" class="content-section">
-        <div class="section-header"><h2>04 // RIESGO</h2><a href="#" class="back-btn">VOLVER ↑</a></div>
+        <div class="section-header"><h2>04 // RIESGO</h2><a href="#top" class="back-btn">VOLVER ↑</a></div>
         <iframe src="https://ejam2trader-max.github.io/Calculadora-de-lotaje/"></iframe>
     </section>
 
     <script>
-        // URL corregida con tu ID de implementación
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxsb-ismISRJgCtmNGEKoC5Il_FE5O4PodpJM8C-F2ct6yK6nzMFpOemnMn2LQJaKAG/exec'; 
+        
+        const frases = [
+            "El mercado paga por tu paciencia", "Sigue el plan, no tus emociones", "La disciplina es libertad", 
+            "No busques tener razón, busca ser rentable", "Un trade no define tu carrera", "Opera lo que ves, no lo que crees",
+            "El riesgo se gestiona, el beneficio llega solo", "Tu mente es tu mejor activo", "Acepta la pérdida como un costo de negocio",
+            "La consistencia nace en la rutina", "Menos es más en el gráfico", "Espera tu configuración perfecta"
+        ];
 
+        let temporalidad = 300; 
+
+        // --- LÓGICA DE MÚSICA YOUTUBE ---
+        var tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        var firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+        var player;
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('yt-player', {
+                height: '0', width: '0',
+                events: { 'onReady': () => console.log("Player Ready") }
+            });
+        }
+
+        function extractId(url) {
+            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+            const match = url.match(regExp);
+            return (match && match[2].length == 11) ? match[2] : null;
+        }
+
+        function loadAndPlay() {
+            const url = document.getElementById('yt-url').value;
+            const videoId = extractId(url);
+            if(videoId && player) {
+                player.loadVideoById(videoId);
+                player.playVideo();
+            } else {
+                alert("URL de YouTube no válida");
+            }
+        }
+
+        function pauseMusic() { if(player) player.pauseVideo(); }
+
+        // --- RELOJ Y FRASES ---
+        function startClocks() {
+            setInterval(() => {
+                const now = new Date();
+                document.getElementById('digital-clock').textContent = now.toLocaleTimeString('en-GB');
+                const totalSeconds = (now.getMinutes() * 60) + now.getSeconds();
+                const rem = temporalidad - (totalSeconds % temporalidad);
+                const min = Math.floor(rem / 60), sec = rem % 60;
+                const timerDisplay = document.getElementById('candle-timer');
+                timerDisplay.textContent = `NEXT: ${String(min).padStart(2, '0')}:${String(sec).padStart(2, '0')}`;
+                
+                if (totalSeconds % 300 === 0) rotateQuote();
+                if (rem <= 10) timerDisplay.classList.add('danger');
+                else timerDisplay.classList.remove('danger');
+            }, 1000);
+        }
+
+        function updateTemporalidad() { temporalidad = parseInt(document.getElementById('time-select').value); }
+        function rotateQuote() {
+            const qDisplay = document.getElementById('quote-display');
+            qDisplay.style.opacity = 0;
+            setTimeout(() => {
+                qDisplay.textContent = frases[Math.floor(Math.random() * frases.length)];
+                qDisplay.style.opacity = 1;
+            }, 1000);
+        }
+
+        // DIARIO
         const diary = document.getElementById('personal-diary');
         diary.value = localStorage.getItem('tv_diary_content') || '';
         diary.oninput = () => localStorage.setItem('tv_diary_content', diary.value);
-
         function toggleNotes() {
             const pad = document.getElementById('note-pad');
             pad.style.display = (pad.style.display === 'flex') ? 'none' : 'flex';
         }
-
         async function sendToDocs() {
             const btn = document.getElementById('send-btn');
-            const text = diary.value;
-            if(!text) return alert("Escribe algo antes de enviar.");
-
-            btn.disabled = true;
-            btn.innerText = "Enviando a Drive...";
-
+            if(!diary.value) return alert("Escribe algo.");
+            btn.disabled = true; btn.innerText = "Enviando...";
             try {
-                await fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    cache: 'no-cache',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ texto: text })
-                });
-                
-                alert("¡Sincronización completa en Google Docs!");
-                diary.value = ""; 
-                localStorage.setItem('tv_diary_content', "");
-            } catch (e) {
-                alert("Error al conectar. Verifica tu conexión.");
-            } finally {
-                btn.disabled = false;
-                btn.innerText = "Sincronizar con Google Docs";
-            }
+                await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ texto: diary.value }) });
+                alert("Sincronizado."); diary.value = ""; localStorage.setItem('tv_diary_content', "");
+            } catch (e) { alert("Error."); }
+            finally { btn.disabled = false; btn.innerText = "Sincronizar"; }
         }
 
-        function update() {
-            const now = new Date();
-            document.getElementById('digital-clock').textContent = now.toLocaleTimeString('en-US', { hour12: false });
-            const m = now.getMinutes(), s = now.getSeconds();
-            const rem = 300 - ((m * 60 + s) % 300);
-            const rM = Math.floor(rem / 60), rS = rem % 60;
-            const timer = document.getElementById('candle-timer');
-            timer.textContent = `NEXT CANDLE: ${String(rM).padStart(2, '0')}:${String(rS).padStart(2, '0')}`;
-            if(rem <= 10) timer.classList.add('danger');
-            else timer.classList.remove('danger');
-        }
-        setInterval(update, 1000);
-        update();
+        startClocks();
     </script>
 </body>
 </html>
