@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trading Station | Tinta Verde</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;600&family=JetBrains+Mono:wght@100;400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --prime-black: #000000;
+            --prime-gold: #c5a059;
+            --lapis-blue: #0a1128;
+            --lapis-border: rgba(37, 99, 235, 0.3);
+            --glass-bg: rgba(10, 17, 40, 0.95);
+        }
+
+        * { scroll-behavior: smooth; box-sizing: border-box; }
+        body { margin: 0; background-color: var(--prime-black); color: #ffffff; font-family: 'Inter', sans-serif; overflow: hidden; }
+
+        /* --- ESCritorio --- */
+        .hero-section { height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; position: relative; }
+        #digital-clock { font-family: 'JetBrains Mono', monospace; font-size: 5.5rem; font-weight: 100; letter-spacing: -5px; color: #fff; }
+        #candle-timer { font-family: 'JetBrains Mono'; color: var(--prime-gold); font-size: 1.1rem; margin: 20px 0; letter-spacing: 2px; }
+
+        .main-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; max-width: 1000px; width: 100%; padding: 0 20px; }
+        .card { 
+            text-decoration: none; 
+            background: linear-gradient(145deg, #0a1128 0%, #000000 100%); 
+            border: 1px solid var(--lapis-border); 
+            padding: 35px 15px; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            transition: 0.5s; 
+        }
+        .card:hover { border-color: #2563eb; transform: translateY(-8px); box-shadow: 0 15px 40px rgba(30, 58, 138, 0.5); }
+        .card span { color: var(--prime-gold); font-family: 'Cinzel'; font-size: 0.8rem; margin-bottom: 5px; }
+        .card strong { font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase; color: #fff; font-weight: 300; }
+
+        /* --- DIARIO --- */
+        #note-pad {
+            position: fixed; bottom: 100px; left: 30px; width: 350px; height: 450px;
+            background: var(--glass-bg); border: 1px solid var(--lapis-border); border-radius: 15px;
+            display: none; flex-direction: column; z-index: 200; backdrop-filter: blur(15px); padding: 20px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.9);
+        }
+        #note-pad h3 { font-family: 'Cinzel', serif; font-size: 0.7rem; color: var(--prime-gold); margin: 0 0 15px 0; display: flex; justify-content: space-between; align-items: center; }
+        #note-pad textarea { flex-grow: 1; background: transparent; border: none; color: #ddd; font-family: 'Inter', sans-serif; font-size: 0.9rem; resize: none; outline: none; line-height: 1.5; }
+        .pad-btn { background: transparent; border: 1px solid var(--prime-gold); color: var(--prime-gold); font-size: 0.6rem; padding: 12px; cursor: pointer; text-transform: uppercase; margin-top: 10px; font-weight: 600; width: 100%; transition: 0.3s; }
+        .pad-btn:hover { background: var(--prime-gold); color: black; }
+
+        .note-toggle { position: fixed; bottom: 30px; left: 30px; width: 50px; height: 50px; background: var(--lapis-blue); border: 1px solid var(--lapis-border); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 201; color: var(--prime-gold); font-size: 1.2rem; transition: 0.3s; }
+
+        /* --- SECCIONES IFRAME --- */
+        .content-section { height: 100vh; width: 100vw; display: flex; flex-direction: column; background: #000; border-top: 1px solid #111; position: absolute; top: 100vh; left: 0; transition: transform 0.6s ease; }
+        .content-section:target { transform: translateY(-100vh); }
+        .section-header { padding: 12px 30px; display: flex; justify-content: space-between; align-items: center; background: #050505; }
+        .section-header h2 { font-family: 'Cinzel', serif; font-size: 0.8rem; color: var(--prime-gold); margin: 0; letter-spacing: 4px; }
+        iframe { flex-grow: 1; width: 100%; border: none; background: white; }
+
+        .back-btn { color: #555; text-decoration: none; font-size: 0.6rem; letter-spacing: 2px; }
+        .danger { color: #ff4444 !important; font-weight: 700; }
+        .footer-tv { position: absolute; bottom: 30px; font-size: 0.6rem; letter-spacing: 4px; color: rgba(197, 160, 89, 0.4); text-transform: uppercase; font-family: 'Cinzel', serif; }
+    </style>
+</head>
+<body>
+
+    <section class="hero-section">
+        <div style="font-family: 'Cinzel'; color: var(--prime-gold); font-size: 0.7rem; letter-spacing: 3px; margin-bottom: 20px; opacity: 0.6;">SISTEMA TINTA VERDE ACTIVADO</div>
+        <div id="digital-clock">00:00:00</div>
+        <div id="candle-timer">NEXT CANDLE: 00:00</div>
+
+        <div class="main-grid">
+            <a href="#plan" class="card"><span>01</span><strong>Plan</strong></a>
+            <a href="#real" class="card"><span>02</span><strong>Real</strong></a>
+            <a href="https://app.deriv.com/?lang=ES&account=demo" target="_blank" class="card"><span>03</span><strong>Demo</strong></a>
+            <a href="#lotes" class="card"><span>04</span><strong>Lotes</strong></a>
+        </div>
+        <div class="footer-tv">Tinta Verde Editores</div>
+    </section>
+
+    <div id="note-pad">
+        <h3>DIARIO TRADING <span onclick="toggleNotes()" style="cursor:pointer">✕</span></h3>
+        <textarea id="personal-diary" placeholder="Escribe tu análisis de hoy..."></textarea>
+        <button id="send-btn" class="pad-btn" onclick="sendToDocs()">Sincronizar con Google Docs</button>
+    </div>
+
+    <div class="note-toggle" onclick="toggleNotes()">✎</div>
+
+    <section id="plan" class="content-section">
+        <div class="section-header"><h2>01 // ESTRATEGIA</h2><a href="#" class="back-btn">VOLVER ↑</a></div>
+        <iframe src="https://tveditores-ux.github.io/planDeTrading/"></iframe>
+    </section>
+
+    <section id="real" class="content-section">
+        <div class="section-header"><h2>02 // MERCADO REAL</h2><a href="#" class="back-btn">VOLVER ↑</a></div>
+        <iframe src="https://ejam2trader-max.github.io/PlataformaDeriv/"></iframe>
+    </section>
+
+    <section id="lotes" class="content-section">
+        <div class="section-header"><h2>04 // RIESGO</h2><a href="#" class="back-btn">VOLVER ↑</a></div>
+        <iframe src="https://ejam2trader-max.github.io/Calculadora-de-lotaje/"></iframe>
+    </section>
+
+    <script>
+        // URL corregida con tu ID de implementación
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxsb-ismISRJgCtmNGEKoC5Il_FE5O4PodpJM8C-F2ct6yK6nzMFpOemnMn2LQJaKAG/exec'; 
+
+        const diary = document.getElementById('personal-diary');
+        diary.value = localStorage.getItem('tv_diary_content') || '';
+        diary.oninput = () => localStorage.setItem('tv_diary_content', diary.value);
+
+        function toggleNotes() {
+            const pad = document.getElementById('note-pad');
+            pad.style.display = (pad.style.display === 'flex') ? 'none' : 'flex';
+        }
+
+        async function sendToDocs() {
+            const btn = document.getElementById('send-btn');
+            const text = diary.value;
+            if(!text) return alert("Escribe algo antes de enviar.");
+
+            btn.disabled = true;
+            btn.innerText = "Enviando a Drive...";
+
+            try {
+                await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    cache: 'no-cache',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ texto: text })
+                });
+                
+                alert("¡Sincronización completa en Google Docs!");
+                diary.value = ""; 
+                localStorage.setItem('tv_diary_content', "");
+            } catch (e) {
+                alert("Error al conectar. Verifica tu conexión.");
+            } finally {
+                btn.disabled = false;
+                btn.innerText = "Sincronizar con Google Docs";
+            }
+        }
+
+        function update() {
+            const now = new Date();
+            document.getElementById('digital-clock').textContent = now.toLocaleTimeString('en-US', { hour12: false });
+            const m = now.getMinutes(), s = now.getSeconds();
+            const rem = 300 - ((m * 60 + s) % 300);
+            const rM = Math.floor(rem / 60), rS = rem % 60;
+            const timer = document.getElementById('candle-timer');
+            timer.textContent = `NEXT CANDLE: ${String(rM).padStart(2, '0')}:${String(rS).padStart(2, '0')}`;
+            if(rem <= 10) timer.classList.add('danger');
+            else timer.classList.remove('danger');
+        }
+        setInterval(update, 1000);
+        update();
+    </script>
+</body>
+</html>
