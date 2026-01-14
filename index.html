@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trading Station | Tinta Verde</title>
+    
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22black%22/><text y=%22.9em%22 font-size=%2290%22 fill=%22%23c5a059%22 font-family=%22Cinzel, serif%22>T</text></svg>">
+
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;600&family=JetBrains+Mono:wght@100;400&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -19,6 +22,7 @@
 
         /* --- HERO SECTION --- */
         .hero-section { height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; position: relative; }
+        
         #digital-clock { font-family: 'JetBrains Mono', monospace; font-size: 2.5rem; font-weight: 100; color: #fff; margin-bottom: 5px; opacity: 0.9; }
         
         #quote-container { height: 30px; margin-bottom: 15px; }
@@ -56,25 +60,18 @@
         .pad-btn:hover { background: var(--prime-gold); color: black; }
         .note-toggle { position: fixed; bottom: 30px; left: 30px; width: 50px; height: 50px; background: var(--lapis-blue); border: 1px solid var(--lapis-border); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 201; color: var(--prime-gold); font-size: 1.2rem; transition: 0.3s; }
 
-        /* --- CENTRO MUSICAL FLOTANTE --- */
+        /* --- CENTRO MUSICAL --- */
         #music-center {
             position: fixed; bottom: 30px; right: 30px; 
             background: var(--glass-bg); border: 1px solid var(--lapis-border); 
             border-radius: 25px; padding: 5px 15px; display: flex; align-items: center; gap: 10px;
-            z-index: 201; backdrop-filter: blur(10px); transition: 0.3s;
+            z-index: 201; backdrop-filter: blur(10px);
         }
-        #yt-url {
-            background: transparent; border: none; color: #fff; font-size: 0.7rem;
-            width: 150px; outline: none; font-family: 'Inter';
-        }
-        .music-btn {
-            background: transparent; border: none; color: var(--prime-gold); 
-            cursor: pointer; font-size: 1.2rem; transition: 0.3s; padding: 5px;
-        }
+        #yt-url { background: transparent; border: none; color: #fff; font-size: 0.7rem; width: 150px; outline: none; font-family: 'Inter'; }
+        .music-btn { background: transparent; border: none; color: var(--prime-gold); cursor: pointer; font-size: 1.2rem; transition: 0.3s; }
         .music-btn:hover { transform: scale(1.2); }
 
-        /* Esconder el reproductor */
-        #yt-player-container { position: absolute; left: -9999px; top: 0; }
+        #yt-player-container { position: absolute; left: -9999px; }
 
         /* --- SECCIONES --- */
         .content-section { height: 100vh; width: 100vw; display: flex; flex-direction: column; background: #000; border-top: 1px solid #111; }
@@ -113,14 +110,14 @@
     <div id="note-pad">
         <h3>DIARIO TRADING <span onclick="toggleNotes()" style="cursor:pointer">✕</span></h3>
         <textarea id="personal-diary" placeholder="Escribe tu análisis..."></textarea>
-        <button id="send-btn" class="pad-btn" onclick="sendToDocs()">Sincronizar con Google Docs</button>
+        <button id="send-btn" class="pad-btn" onclick="sendToDocs()">Sincronizar</button>
     </div>
     <div class="note-toggle" onclick="toggleNotes()">✎</div>
 
     <div id="music-center">
-        <input type="text" id="yt-url" placeholder="Pega URL de YouTube..." value="https://www.youtube.com/watch?v=C9BJgrurYbc">
-        <button class="music-btn" onclick="loadAndPlay()" title="Reproducir">▶</button>
-        <button class="music-btn" onclick="pauseMusic()" title="Pausar">⏸</button>
+        <input type="text" id="yt-url" placeholder="URL YouTube..." value="https://www.youtube.com/watch?v=C9BJgrurYbc">
+        <button class="music-btn" onclick="loadAndPlay()">▶</button>
+        <button class="music-btn" onclick="pauseMusic()">⏸</button>
     </div>
     <div id="yt-player-container"><div id="yt-player"></div></div>
 
@@ -149,41 +146,17 @@
 
         let temporalidad = 300; 
 
-        // --- LÓGICA DE MÚSICA YOUTUBE ---
-        var tag = document.createElement('script');
-        tag.src = "https://www.youtube.com/iframe_api";
-        var firstScriptTag = document.getElementsByTagName('script')[0];
-        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
+        // YOUTUBE API
+        var tag = document.createElement('script'); tag.src = "https://www.youtube.com/iframe_api";
+        var firstScriptTag = document.getElementsByTagName('script')[0]; firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
         var player;
-        function onYouTubeIframeAPIReady() {
-            player = new YT.Player('yt-player', {
-                height: '0', width: '0',
-                events: { 'onReady': () => console.log("Player Ready") }
-            });
-        }
-
-        function extractId(url) {
-            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-            const match = url.match(regExp);
-            return (match && match[2].length == 11) ? match[2] : null;
-        }
-
-        function loadAndPlay() {
-            const url = document.getElementById('yt-url').value;
-            const videoId = extractId(url);
-            if(videoId && player) {
-                player.loadVideoById(videoId);
-                player.playVideo();
-            } else {
-                alert("URL de YouTube no válida");
-            }
-        }
-
+        function onYouTubeIframeAPIReady() { player = new YT.Player('yt-player', { height: '0', width: '0' }); }
+        function extractId(url) { const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/; const match = url.match(regExp); return (match && match[2].length == 11) ? match[2] : null; }
+        function loadAndPlay() { const videoId = extractId(document.getElementById('yt-url').value); if(videoId && player) { player.loadVideoById(videoId); player.playVideo(); } }
         function pauseMusic() { if(player) player.pauseVideo(); }
 
-        // --- RELOJ Y FRASES ---
-        function startClocks() {
+        // RELOJ Y FRASES
+        function startSystem() {
             setInterval(() => {
                 const now = new Date();
                 document.getElementById('digital-clock').textContent = now.toLocaleTimeString('en-GB');
@@ -192,7 +165,6 @@
                 const min = Math.floor(rem / 60), sec = rem % 60;
                 const timerDisplay = document.getElementById('candle-timer');
                 timerDisplay.textContent = `NEXT: ${String(min).padStart(2, '0')}:${String(sec).padStart(2, '0')}`;
-                
                 if (totalSeconds % 300 === 0) rotateQuote();
                 if (rem <= 10) timerDisplay.classList.add('danger');
                 else timerDisplay.classList.remove('danger');
@@ -209,26 +181,18 @@
             }, 1000);
         }
 
-        // DIARIO
         const diary = document.getElementById('personal-diary');
         diary.value = localStorage.getItem('tv_diary_content') || '';
         diary.oninput = () => localStorage.setItem('tv_diary_content', diary.value);
-        function toggleNotes() {
-            const pad = document.getElementById('note-pad');
-            pad.style.display = (pad.style.display === 'flex') ? 'none' : 'flex';
-        }
+        function toggleNotes() { const pad = document.getElementById('note-pad'); pad.style.display = (pad.style.display === 'flex') ? 'none' : 'flex'; }
         async function sendToDocs() {
-            const btn = document.getElementById('send-btn');
-            if(!diary.value) return alert("Escribe algo.");
-            btn.disabled = true; btn.innerText = "Enviando...";
-            try {
-                await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ texto: diary.value }) });
-                alert("Sincronizado."); diary.value = ""; localStorage.setItem('tv_diary_content', "");
-            } catch (e) { alert("Error."); }
+            const btn = document.getElementById('send-btn'); if(!diary.value) return;
+            btn.disabled = true; btn.innerText = "...";
+            try { await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ texto: diary.value }) }); alert("Sincronizado"); diary.value = ""; } catch (e) {}
             finally { btn.disabled = false; btn.innerText = "Sincronizar"; }
         }
 
-        startClocks();
+        startSystem();
     </script>
 </body>
 </html>
